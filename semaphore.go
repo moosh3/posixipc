@@ -7,7 +7,7 @@ type sem struct {
 type isemaphore interface {
 	// Open establishes a connection between a name semaphore
 	// and a process, LWP or thread
-	Open(name string, of oflag) (*sem, error) // sem_open
+	Open(name string, oflag int) (*sem, error) // sem_open
 	// Init is used to initialize the unnamed semaphores referred
 	// too by *sem. The value of the initialized semaphore is `value`.
 	// If `pshared` has a non-zero value, then the semaphore is shared
@@ -46,3 +46,11 @@ type isemaphore interface {
 	// a semaphore unlock operation on that semaphore
 	Post(*sem) error
 }
+
+func (s *sem) Open()
+
+// O_EXCL
+func (s *sem) openReadWrite() error { return nil }
+
+// O_CREAT
+func (s *sem) openCreate() error { return nil }

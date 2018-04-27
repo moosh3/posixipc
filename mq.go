@@ -1,5 +1,9 @@
 package posixipc
 
+// Implemented in runtime package.
+func runtime_BeforeExec()
+func runtime_AfterExec()
+
 type mq struct {
 	desc mqDesc
 	attr mqattr
@@ -10,13 +14,14 @@ type mqstat struct{}
 type mqattr struct{}
 
 type sigevent string
+type key_t string
 
 type imq interface {
 	// Open establishes the connection between a process and a message queue
 	// with a message queue descriptor. It creates an open message queue
 	// description that refers to the new message queue, used by other functions
 	// to refer to the message queue
-	Open(name *string, oflag int) // mq_open
+	Open(name *string, oflag int) error // mq_open
 	// Close removes the association between the message queue descriptor,
 	// `mqdes`, and its message queue.
 	Close(mqd_t mqdes) error // mq_close
@@ -40,3 +45,20 @@ type imq interface {
 	// GetAttr is used to get attributes associated with the open message queue description referenced by the message queue descriptor specified by mqdes.
 	GetAttr(mqd_t mqdes, mqstat mq_attr, omqstat mq_attr) error
 }
+
+// Open
+func (m *mq) Open(name string, oflag int) error {
+
+}
+
+// O_RDONLY
+func (m *mq) openReadOnly() error { return nil }
+
+// O_WRONLY
+func (m *mq) openWriteOnly() error { return nil }
+
+// O_RDWR
+func (m *mq) openReadWrite() error { return nil }
+
+// O_CREAT
+func (m *mq) openCreate() error { return nil }

@@ -1,26 +1,27 @@
 package posixipc
 
 const (
-	O_ACCMODE   = 0x3
-	O_APPEND    = 0x400
-	O_ASYNC     = 0x2000
-	O_CLOEXEC   = 0x80000
-	O_CREAT     = 0x40
-	O_DIRECT    = 0x4000
-	O_DIRECTORY = 0x10000
-	O_DSYNC     = 0x1000
-	O_EXCL      = 0x80
-	O_FSYNC     = 0x101000
-	O_LARGEFILE = 0x0
-	O_NDELAY    = 0x800
-	O_NOATIME   = 0x40000
-	O_NOCTTY    = 0x100
-	O_NOFOLLOW  = 0x20000
-	O_NONBLOCK  = 0x800
-	O_RDONLY    = 0x0
-	O_RDWR      = 0x2
-	O_RSYNC     = 0x101000
-	O_SYNC      = 0x101000
-	O_TRUNC     = 0x200
-	O_WRONLY    = 0x1
+	SYS_EXIT_GROUP    = 231
+	SYS_EPOLL_WAIT    = 232
+	SYS_EPOLL_CTL     = 233
+	SYS_TGKILL        = 234
+	SYS_UTIMES        = 235
+	SYS_VSERVER       = 236
+	SYS_MBIND         = 237
+	SYS_SET_MEMPOLICY = 238
+	SYS_GET_MEMPOLICY = 239
+)
+
+const (
+	SYS_MQ_OPEN         = 240
+	SYS_MQ_UNLINK       = 241
+	SYS_MQ_TIMEDSEND    = 242
+	SYS_MQ_TIMEDRECEIVE = 243
+	SYS_MQ_NOTIFY       = 244
+	SYS_MQ_GETSETATTR   = 245
+	SYS_KEXEC_LOAD      = 246
+	SYS_WAITID          = 247
+	SYS_ADD_KEY         = 248
+	SYS_REQUEST_KEY     = 249
+	SYS_KEYCTL          = 250
 )
