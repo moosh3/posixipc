@@ -1,7 +1,21 @@
 package posixipc
 
+import (
+	"errors"
+	"sync"
+)
+
+var ErrNoTickets = errors.New("could not acquire semaphore ticket")
+
 type sem struct {
+	sync.RWMutex
 	name string
+}
+
+type sembuf struct {
+	sem_num int // # of semaphore element
+	sem_op  int // operation to perform
+	sem_flq int // operations specific options
 }
 
 func (s *sem) Open(name string, oflag int) error {

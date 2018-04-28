@@ -1,20 +1,59 @@
 package posixipc
 
-// Implemented in runtime package.
-func runtime_BeforeExec()
-func runtime_AfterExec()
+/*
+#include <stdio.h>
+#include <errno.h>
+#include <signal.h>
+#include <pthread.h>
+#include <mqueue.h>
+*/
+import "C"
+
+import (
+	"fmt"
+	"sync"
+)
+
+const (
+	DefaultMaxQueues  = 1
+	DefaultMaxMsg     = 2
+	DefaultMaxSizeMsg = 1024
+)
 
 type mq struct {
-	desc mqDesc
-	attr mqattr
+	name string
+	desc mg_des
+	attr mq_attr
+
+	mu  sync.Mutex
+	buf []byte
 }
 
-type mqdes struct{}
-type mqstat struct{}
-type mqattr struct{}
+func (m *mq) String() string {
+	return fmt.Printf("mq name: %s", mq.name)
+}
 
-type sigevent string
+// descriptor used for operations
+type mqdes struct {
+	pid int
+}
+
+// key in queue for msgs
 type key_t string
+
+// store queue attributes
+type mq_attr struct {
+	// opts for the queue; mq_setattr can change it
+	mq_flags int
+	// # messages stored in a queue. 0 == N/A
+	mq_maxmsg int
+	// # messages currently on the given queue
+	mq_curmsgs int
+	// # of processes waiting to send a message
+	mq_sendwait int
+	// # of process waiting to recieve a message
+	mq_recvwait int
+}
 
 // Open
 func (m *mq) Open(name string, oflag int) error {
