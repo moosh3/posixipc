@@ -1,12 +1,16 @@
 package posixipc
 
-const megabyte uint64 = 1024 * 1024
+import (
+	"sync"
+)
 
-type mem struct {
-	total int64
-	free  int64
+// SharedMem provides a segment of memory that can be shared
+// between goroutines, passed via a mutex locker
+type SharedMem struct {
+	sync.Mutex
 
-	// swap
-	stotal int64
-	sfree  int64
+	frames int64
+	max    []byte
+
+	free int64
 }

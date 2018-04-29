@@ -20,39 +20,45 @@ const (
 	DefaultMaxSizeMsg = 1024
 )
 
-type mq struct {
+type MessageQueue struct {
 	name string
-	desc mg_des
-	attr mq_attr
+	desc MqDesc
+	attr MqAttr
 
 	mu  sync.Mutex
 	buf []byte
 }
 
-func (m *mq) String() string {
-	return fmt.Printf("mq name: %s", mq.name)
+func (m *MessageQueue) String() string {
+	return fmt.Printf("Message Queue name: %s", mq.name)
 }
 
 // descriptor used for operations
-type mqdes struct {
+type MqDesc struct {
 	pid int
 }
 
-// key in queue for msgs
-type key_t string
+// ProcFromPid returns the process set in any given MqDesc struct,
+// which describes a certain MessageQueue.
+func (md *MyDesc) ProcFromPid(pid int) *os.Process {
+	return os.FindProcess(pid)
+}
 
-// store queue attributes
-type mq_attr struct {
+// Key in queue for msgs
+type Key string
+
+// MqAttr stores queue attributes
+type MqAttr struct {
 	// opts for the queue; mq_setattr can change it
-	mq_flags int
+	OFlags int
 	// # messages stored in a queue. 0 == N/A
-	mq_maxmsg int
+	MaxMsgs int
 	// # messages currently on the given queue
-	mq_curmsgs int
+	CurrMsgs int
 	// # of processes waiting to send a message
-	mq_sendwait int
+	SendWait int
 	// # of process waiting to recieve a message
-	mq_recvwait int
+	RecieveWait int
 }
 
 // Open
@@ -61,21 +67,38 @@ func (m *mq) Open(name string, oflag int) error {
 }
 
 // O_RDONLY
-func (m *mq) openReadOnly() error { return nil }
+func (m *MessageQueue) openReadOnly() error { return nil }
 
 // O_WRONLY
-func (m *mq) openWriteOnly() error { return nil }
+func (m *MessageQueue) openWriteOnly() error { return nil }
 
 // O_RDWR
-func (m *mq) openReadWrite() error { return nil }
+func (m *MessageQueue) openReadWrite() error { return nil }
 
 // O_CREAT
-func (m *mq) openCreate() error { return nil }
+func (m *MessageQueue) openCreate() error { return nil }
 
-func (m *mp) Send(mqd_t mqdes, msg_ptr uintptr, msg_len []byte, msg_prio int) error    { return nil }
-func (m *mq) Recieve(mqd_t mqdes, msg_ptr uintptr, msg_len []byte, int msg_prio) error { return nil }
-func (m *mq) Close(mqd_t mqdes) error                                                  { return nil }
-func (m *mq) Unlink(name string) error                                                 { return nil }
-func (m *mq) Notify(mqd_t mqdes, notification sigevent) error                          { return nil }
-func (m *mq) SetAttr(mqd_t mqdes, mqstat mq_attr, omqstat mq_attr) error               { return nil }
-func (m *mq) GetAttr(mqd_t mqdes, mqstat mq_attr, omqstat mq_attr) error               { return nil }
+// Send
+func (m *MessageQueue) Send(mqd_t mqdes, msg_ptr uintptr, msg_len []byte, msg_prio int) error {
+	return nil
+}
+
+// Recieve
+func (m *MessageQueue) Recieve(mqd_t mqdes, msg_ptr uintptr, msg_len []byte, int msg_prio) error {
+	return nil
+}
+
+// Close
+func (m *MessageQueue) Close(mqd_t mqdes) error { return nil }
+
+// Unlink
+func (m *MessageQueue) Unlink(name string) error { return nil }
+
+// Notify
+func (m *MessageQueue) Notify(mqd_t mqdes, notification sigevent) error { return nil }
+
+// SetAttr
+func (m *MessageQueue) SetAttr(mqd_t mqdes, mqstat mq_attr, omqstat mq_attr) error { return nil }
+
+// GetAttr
+func (m *MessageQueue) GetAttr(mqd_t mqdes, mqstat mq_attr, omqstat mq_attr) error { return nil }
