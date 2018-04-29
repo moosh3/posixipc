@@ -1,4 +1,4 @@
-# posixpic [![GoDoc](https://godoc.org/github.com/aleccunningham/posixipc?status.svg)]
+# posixpic [![GoDoc](https://godoc.org/github.com/aleccunningham/posixipc?status.svg)](https://godoc.org/github.com/aleccunningham/posixipc)
 
 POSIX pic interfaces implemented in Go
 
