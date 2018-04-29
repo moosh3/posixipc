@@ -1,6 +1,44 @@
 package posixipc
 
-type isemaphore interface {
+import (
+	"sync"
+)
+
+// Default size of the virtualized heap and stack created by
+// the IPC for use with the mq, semaphore, and shared memory.
+const (
+	dStackSize = 64
+	dHeapSize  = 256
+)
+
+// ipc is a POSIX-styled <> heavily inspired by the Oracle documentation
+// located at https://docs.oracle.com/cd/E19455-01/806-4750/6jdqdfltf/index.html.
+// ipc keeps tracker of the number of registers, and creates a virtualize
+// stack and heap to use for allocating/deallocating memory for processes/CPU usage.
+type ipc struct {
+	sync.RWMutex
+	isem
+	imq
+	imem
+
+	registers int64
+
+	stack []byte // 64kb
+	heap  []byte // 256kb
+}
+
+// NewIPC creates a new IPC with a fixed sized virtualized stack and
+// heap, handling one register at a time.
+func NewIPC() *ipc {
+	return &ipc{
+		registers: 1,
+		stack:     make([]byte, dStackSize),
+		heap:      make([]byte, dHeapSize),
+	}
+}
+
+// Semaphore
+type Semaphore interface {
 	// Open establishes a connection between a name semaphore
 	// and a process, LWP or thread
 	Open(name string, oflag int) (*sem, error) // sem_open
@@ -43,7 +81,11 @@ type isemaphore interface {
 	Post(*sem) error
 }
 
-type imq interface {
+// MessageQueue is an interface that defines an operator for a given
+// message queue, created via a SYS_CALL (O_RDONLY, O_WRONLY, O_RDWR, O_CREAT,
+// O_EXCL, and O_NONBLOCK. More information can be found in the Oracle
+// documentation: https://docs.oracle.com/cd/E19455-01/806-0630/6j9vkb8dq/index.html
+type MessageQueue interface {
 	// Open establishes the connection between a process and a message queue
 	// with a message queue descriptor. It creates an open message queue
 	// description that refers to the new message queue, used by other functions
@@ -73,7 +115,10 @@ type imq interface {
 	GetAttr(mqd_t mqdes, mqstat mq_attr, omqstat mq_attr) error
 }
 
-type imem interface {
+// SharedMemory is an interface for interacting with memory that is accessed
+// by more than one process at any given time; the implementation uses Go's philosphy:
+// `Do not communicate by sharing memory; instead, share memory by communicating`
+type SharedMemory interface {
 	Open(io.File)
 	mmap()
 }
