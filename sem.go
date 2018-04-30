@@ -5,8 +5,10 @@ import (
 	"sync"
 )
 
+// ErrNoTickets
 var ErrNoTickets = errors.New("could not acquire semaphore ticket")
 
+// Semaphore
 type Semaphore struct {
 	sync.RWMutex
 	name string
@@ -14,14 +16,20 @@ type Semaphore struct {
 	buf SemBuff
 }
 
+// SemBuff
 type SemBuff struct {
 	index     int // # of semaphore element
 	operation int // operation to perform
 	oflags    int // operations specific options
 }
 
+// NewSemaphore returns a new instance of a Semaphore locking mechanism
+func NewSemaphore(name string) *Semaphore {
+	return &Semaphore{name: name}
+}
+
 // Open
-func (s *Semaphore) Open(name string, oflag int) error {
+func (s *Semaphore) Open(name *string, oflag int) error {
 
 }
 
@@ -32,16 +40,16 @@ func (s *Semaphore) openReadWrite() error { return nil }
 func (s *Semaphore) openCreate() error { return nil }
 
 // Init
-func (s *Semaphore) Init(sem_t *sem, pshared int, value int) error { return nil }
+func (s *Semaphore) Init(sem *Semaphore, pshared int, value int) error { return nil }
 
 // Close
-func (s *Semaphore) Close(sem_t *sem) error { return nil }
+func (s *Semaphore) Close(sem *Semaphore) error { return nil }
 
 // Unlink
 func (s *Semaphore) Unlink(name *string) error { return nil }
 
 // Destroy
-func (s *Semaphore) Destroy(sem_t *sem) error { return nil }
+func (s *Semaphore) Destroy(sem *Semaphore) error { return nil }
 
 // GetValue
-func (s *Semaphore) GetValue(sem_t *sem, sval *int) error { return nil }
+func (s *Semaphore) GetValue(sem *Semaphore, sval *int) error { return nil }

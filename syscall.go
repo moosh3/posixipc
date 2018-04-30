@@ -3,8 +3,9 @@ package posixipc
 import (
 	"fmt"
 	"io"
+	"os/signal"
 	"runtime"
-	"signal"
+	"time"
 )
 
 // SYS calls used in POSIX IPC

@@ -1,18 +1,18 @@
 package posixipc
 
-/*
-#include <stdio.h>
-#include <errno.h>
-#include <signal.h>
-#include <pthread.h>
-#include <mqueue.h>
-*/
-import "C"
-
 import (
 	"fmt"
+	"os"
 	"sync"
 )
+
+type Priority int
+
+// Msg's are placed onto MessageQueues
+type Msg struct {
+	bytes    []byte
+	priority Priority
+}
 
 const (
 	DefaultMaxQueues  = 1
@@ -29,19 +29,25 @@ type MessageQueue struct {
 	buf []byte
 }
 
-func (m *MessageQueue) String() string {
-	return fmt.Printf("Message Queue name: %s", mq.name)
+// NewMessageQueue returns a new instance of a MessageQueue
+func NewMessageQueue(name string) *MessageQueue {
+	return &MessageQueue{name: name}
 }
 
-// descriptor used for operations
+func (m *MessageQueue) String() string {
+	return fmt.Printf("mq: %s", m.name)
+}
+
+// MqDesc descriptor used for operations
 type MqDesc struct {
 	pid int
 }
 
 // ProcFromPid returns the process set in any given MqDesc struct,
 // which describes a certain MessageQueue.
-func (md *MyDesc) ProcFromPid(pid int) *os.Process {
-	return os.FindProcess(pid)
+func (md *MqDesc) ProcFromPid(pid int) *os.Process {
+	proc, _ := os.FindProcess(pid)
+	return proc
 }
 
 // Key in queue for msgs
@@ -62,8 +68,8 @@ type MqAttr struct {
 }
 
 // Open
-func (m *mq) Open(name string, oflag int) error {
-
+func (m *MessageQueue) Open(name string, oflag int) error {
+	return nil
 }
 
 // O_RDONLY
@@ -79,26 +85,28 @@ func (m *MessageQueue) openReadWrite() error { return nil }
 func (m *MessageQueue) openCreate() error { return nil }
 
 // Send
-func (m *MessageQueue) Send(mqd_t mqdes, msg_ptr uintptr, msg_len []byte, msg_prio int) error {
+func (m *MessageQueue) Send(mq MqDesc, ptr uintptr, len []byte, priority Priority) error {
 	return nil
 }
 
 // Recieve
-func (m *MessageQueue) Recieve(mqd_t mqdes, msg_ptr uintptr, msg_len []byte, int msg_prio) error {
+func (m *MessageQueue) Recieve(mq MqDesc, ptr uintptr, len []byte, int Priority) error {
 	return nil
 }
 
 // Close
-func (m *MessageQueue) Close(mqd_t mqdes) error { return nil }
+func (m *MessageQueue) Close(mq MqDesc) error { return nil }
 
 // Unlink
 func (m *MessageQueue) Unlink(name string) error { return nil }
 
 // Notify
-func (m *MessageQueue) Notify(mqd_t mqdes, notification sigevent) error { return nil }
+func (m *MessageQueue) Notify(mq MqDesc, sig os.Signal) error { return nil }
+
+type MqKey int
 
 // SetAttr
-func (m *MessageQueue) SetAttr(mqd_t mqdes, mqstat mq_attr, omqstat mq_attr) error { return nil }
+func (m *MessageQueue) SetAttr(mq MqDesc, key MqKey, value interface{}) error { return nil }
 
 // GetAttr
-func (m *MessageQueue) GetAttr(mqd_t mqdes, mqstat mq_attr, omqstat mq_attr) error { return nil }
+func (m *MessageQueue) GetAttr(mq MqDesc, key MqKey) error { return nil }

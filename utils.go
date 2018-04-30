@@ -16,8 +16,8 @@ func MaxProcs() int {
 	return runtime.GOMAXPROCS(num)
 }
 
-func MemoryStats() *os.MemStats {
-	var memStats *runtime.MemStats
+func MemoryStats() *runtime.MemStats {
+	memStats := new(runtime.MemStats)
 	return runtime.ReadMemStats(memStats)
 }
 
